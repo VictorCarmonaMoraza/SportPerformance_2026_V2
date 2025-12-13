@@ -1,0 +1,150 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "sportPerformance API",
+    "version": "1.0.0",
+    "description": "API para gestionar usuarios, autenticación y registro en el sistema SportPerformance"
+  },
+  "basePath": "/",
+  "schemes": ["http"],
+
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+
+  "paths": {
+    "/api/usuarios": {
+      "get": {
+        "tags": ["Usuarios"],
+        "summary": "Obtiene todos los usuarios registrados",
+        "description": "Devuelve la lista completa de usuarios registrados en el sistema, incluyendo su rol y fecha de creación.",
+        "responses": {
+          "200": {
+            "description": "Lista de usuarios obtenida correctamente",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "integer", "example": 200 },
+                "message": { "type": "string", "example": "Usuarios obtenidos correctamente" },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "integer", "example": 1 },
+                      "nameuser": { "type": "string", "example": "admin" },
+                      "email": { "type": "string", "example": "admin@sportperformance.com" },
+                      "rol": { "type": "string", "example": "admin" },
+                      "creado_en": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-10-30T12:32:14Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor al obtener los usuarios"
+          }
+        }
+      }
+    },
+
+    "/api/auth/login": {
+      "post": {
+        "tags": ["Autenticación"],
+        "summary": "Inicia sesión en el sistema",
+        "description": "Permite a un usuario iniciar sesión con su nombre de usuario y contraseña.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Credenciales",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nameuser": { "type": "string", "example": "lgomez" },
+                "password": { "type": "string", "example": "123456" }
+              },
+              "required": ["nameuser", "password"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login exitoso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "integer", "example": 200 },
+                "message": { "type": "string", "example": "Login correcto" },
+                "token": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
+                "usuario": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "integer", "example": 2 },
+                    "nameuser": { "type": "string", "example": "lgomez" },
+                    "email": { "type": "string", "example": "laura.gomez@sportperformance.com" },
+                    "rol": { "type": "string", "example": "deportista" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Contraseña incorrecta" },
+          "404": { "description": "Usuario no encontrado" },
+          "500": { "description": "Error interno del servidor" }
+        }
+      }
+    },
+
+    "/api/register": {
+      "post": {
+        "tags": ["Registro"],
+        "summary": "Registra un nuevo usuario en el sistema",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "NuevoUsuario",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nameuser": { "type": "string", "example": "vcar" },
+                "email": { "type": "string", "example": "victor@sportperformance.com" },
+                "password": { "type": "string", "example": "123456" },
+                "rol": { "type": "string", "example": "admin" }
+              },
+              "required": ["nameuser", "email", "password"]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Usuario creado correctamente",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "integer", "example": 201 },
+                "message": { "type": "string", "example": "Usuario creado correctamente" },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "nameuser": { "type": "string", "example": "vcar" },
+                    "email": { "type": "string", "example": "victor@sportperformance.com" },
+                    "rol": { "type": "string", "example": "admin" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Faltan campos obligatorios" },
+          "409": { "description": "El usuario o email ya existen" },
+          "500": { "description": "Error interno del servidor" }
+        }
+      }
+    }
+  }
+}
