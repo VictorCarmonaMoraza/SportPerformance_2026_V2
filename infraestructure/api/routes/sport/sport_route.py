@@ -1,17 +1,12 @@
-from flask import Blueprint, jsonify
-from sqlalchemy import text
-from sqlalchemy.engine import row
-from sqlalchemy.exc import SQLAlchemyError
-
+from flask import Blueprint, jsonify, request
 from domain.entities.sportsperson.sportsperson import Sportsperson
 from infraestructure.config.config_bd import engine
-
-sport_bp = Blueprint("sport_bp", __name__, url_prefix="/api/sport")
-
-## Obtener un deportista por su id
 from flask import jsonify
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError, SQLAlchemyError
+
+
+sport_bp = Blueprint("sport_bp", __name__, url_prefix="/api/sport")
 
 ##Obtener todos los deportistas
 @sport_bp.route("/getAllSport", methods=["GET"])
@@ -71,7 +66,64 @@ def get_all_sport():
             "detail": str(e)
         }), 500
 
-## Mostrar todos los deportistas
 
+## Obtener un deportista por su id
+@sport_bp.route("/getSportById/<int:id>", methods=["GET"])
+def get_sport_by_id(id):
+    try:
+        with engine.connect() as connectionBD:
+            existing_deportista = connectionBD.execute(
+                text("SELECT * FROM deportistas WHERE id = :id"),
+                {"id": id}
+            ).mappings().first()
+
+            if not existing_deportista:
+                return jsonify({
+                    "status": 404,
+                    "error": "Deportista no encontrado"
+                }), 404
+
+            deportista = Sportsperson(
+                id=existing_deportista["id"],
+                usuario_id=existing_deportista["usuario_id"],
+                nombre=existing_deportista["nombre"],
+                edad=existing_deportista["edad"],
+                disciplina_deportiva=existing_deportista["disciplina_deportiva"],
+                nacionalidad=existing_deportista["nacionalidad"],
+                telefono=existing_deportista["telefono"]
+            )
+
+        return jsonify({
+            "status": 200,
+            "message": "Deportista encontrado",
+            "deportista": {
+                "id": deportista.id,
+                "usuario_id": deportista.usuario_id,
+                "nombre": deportista.nombre,
+                "edad": deportista.edad,
+                "disciplina_deportiva": deportista.disciplina_deportiva,
+                "nacionalidad": deportista.nacionalidad,
+                "telefono": deportista.telefono
+            }
+        }), 200
+
+    except OperationalError:
+        return jsonify({
+            "status": 503,
+            "error": "Base de datos no disponible"
+        }), 503
+
+    except SQLAlchemyError:
+        return jsonify({
+            "status": 500,
+            "error": "Error ejecutando la consulta"
+        }), 500
+
+    except Exception as e:
+        return jsonify({
+            "status": 500,
+            "error": "Error interno del servidor",
+            "detail": str(e)
+        }), 500
 
 ## Modificar datos de un deportista
