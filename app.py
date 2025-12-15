@@ -7,6 +7,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 from flask_cors import CORS
 
 from infraestructure.api.routes.auth.auth_routes import auth_bp
+from infraestructure.api.routes.sport.sport_route import sport_bp
 from infraestructure.config.settings import settings
 
 
@@ -40,6 +41,9 @@ except Exception as e:
 #  Blueprints de la API
 # ============================================================
 app.register_blueprint(auth_bp)
+app.register_blueprint(sport_bp)
+print("📌 RUTAS REGISTRADAS:")
+print(f'La ruta es -----------> {app.url_map}')
 
 
 # ============================================================

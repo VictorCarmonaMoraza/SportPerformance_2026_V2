@@ -6,57 +6,22 @@
     "description": "API para gestionar usuarios, autenticación y registro en el sistema SportPerformance"
   },
   "basePath": "/",
-  "schemes": ["http"],
-
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
-
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
   "paths": {
-    "/api/usuarios": {
-      "get": {
-        "tags": ["Usuarios"],
-        "summary": "Obtiene todos los usuarios registrados",
-        "description": "Devuelve la lista completa de usuarios registrados en el sistema, incluyendo su rol y fecha de creación.",
-        "responses": {
-          "200": {
-            "description": "Lista de usuarios obtenida correctamente",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": { "type": "integer", "example": 200 },
-                "message": { "type": "string", "example": "Usuarios obtenidos correctamente" },
-                "data": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": { "type": "integer", "example": 1 },
-                      "nameuser": { "type": "string", "example": "admin" },
-                      "email": { "type": "string", "example": "admin@sportperformance.com" },
-                      "rol": { "type": "string", "example": "admin" },
-                      "creado_en": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-10-30T12:32:14Z"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Error interno del servidor al obtener los usuarios"
-          }
-        }
-      }
-    },
-
     "/api/auth/login": {
       "post": {
-        "tags": ["Autenticación"],
+        "tags": [
+          "Autenticación"
+        ],
         "summary": "Inicia sesión en el sistema",
-        "description": "Permite a un usuario iniciar sesión con su nombre de usuario y contraseña.",
         "parameters": [
           {
             "in": "body",
@@ -65,10 +30,19 @@
             "schema": {
               "type": "object",
               "properties": {
-                "nameuser": { "type": "string", "example": "lgomez" },
-                "password": { "type": "string", "example": "123456" }
+                "nameuser": {
+                  "type": "string",
+                  "example": "lgomez"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "123456"
+                }
               },
-              "required": ["nameuser", "password"]
+              "required": [
+                "nameuser",
+                "password"
+              ]
             }
           }
         ],
@@ -78,31 +52,54 @@
             "schema": {
               "type": "object",
               "properties": {
-                "status": { "type": "integer", "example": 200 },
-                "message": { "type": "string", "example": "Login correcto" },
-                "token": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
+                "status": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Login correcto"
+                },
+                "token": {
+                  "type": "string"
+                },
                 "usuario": {
                   "type": "object",
                   "properties": {
-                    "id": { "type": "integer", "example": 2 },
-                    "nameuser": { "type": "string", "example": "lgomez" },
-                    "email": { "type": "string", "example": "laura.gomez@sportperformance.com" },
-                    "rol": { "type": "string", "example": "deportista" }
+                    "id": {
+                      "type": "integer"
+                    },
+                    "nameuser": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "rol": {
+                      "type": "string"
+                    }
                   }
                 }
               }
             }
           },
-          "401": { "description": "Contraseña incorrecta" },
-          "404": { "description": "Usuario no encontrado" },
-          "500": { "description": "Error interno del servidor" }
+          "401": {
+            "description": "Contraseña incorrecta"
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
         }
       }
     },
-
-    "/api/register": {
+    "/api/auth/register": {
       "post": {
-        "tags": ["Registro"],
+        "tags": [
+          "Registro"
+        ],
         "summary": "Registra un nuevo usuario en el sistema",
         "parameters": [
           {
@@ -112,12 +109,24 @@
             "schema": {
               "type": "object",
               "properties": {
-                "nameuser": { "type": "string", "example": "vcar" },
-                "email": { "type": "string", "example": "victor@sportperformance.com" },
-                "password": { "type": "string", "example": "123456" },
-                "rol": { "type": "string", "example": "admin" }
+                "nameuser": {
+                  "type": "string",
+                  "example": "vcar"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "victor@sportperformance.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "123456"
+                }
               },
-              "required": ["nameuser", "email", "password"]
+              "required": [
+                "nameuser",
+                "email",
+                "password"
+              ]
             }
           }
         ],
@@ -127,22 +136,106 @@
             "schema": {
               "type": "object",
               "properties": {
-                "status": { "type": "integer", "example": 201 },
-                "message": { "type": "string", "example": "Usuario creado correctamente" },
+                "status": {
+                  "type": "integer",
+                  "example": 201
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Usuario creado correctamente"
+                },
                 "data": {
                   "type": "object",
                   "properties": {
-                    "nameuser": { "type": "string", "example": "vcar" },
-                    "email": { "type": "string", "example": "victor@sportperformance.com" },
-                    "rol": { "type": "string", "example": "admin" }
+                    "nameuser": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
                   }
                 }
               }
             }
           },
-          "400": { "description": "Faltan campos obligatorios" },
-          "409": { "description": "El usuario o email ya existen" },
-          "500": { "description": "Error interno del servidor" }
+          "400": {
+            "description": "Faltan campos obligatorios"
+          },
+          "409": {
+            "description": "El usuario o email ya existen"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    },
+    "/api/sport/getAllSport": {
+      "get": {
+        "tags": [
+          "Deportistas"
+        ],
+        "summary": "Obtiene la lista de todos los deportistas",
+        "description": "Devuelve una lista de deportistas registrados en el sistema",
+        "responses": {
+          "200": {
+            "description": "Deportistas obtenidos correctamente",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Deportistas obtenidos correctamente"
+                },
+                "deportistas": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "usuario_id": {
+                        "type": "integer",
+                        "example": 6
+                      },
+                      "nombre": {
+                        "type": "string",
+                        "example": "Víctor Carmona"
+                      },
+                      "edad": {
+                        "type": "integer",
+                        "example": 29
+                      },
+                      "disciplina_deportiva": {
+                        "type": "string",
+                        "example": "Atletismo"
+                      },
+                      "nacionalidad": {
+                        "type": "string",
+                        "example": "España"
+                      },
+                      "telefono": {
+                        "type": "string",
+                        "example": "+34 678 912 345"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Base de datos no disponible"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
         }
       }
     }
