@@ -5,8 +5,8 @@ from flask import jsonify
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError, SQLAlchemyError
 
-
 sport_bp = Blueprint("sport_bp", __name__, url_prefix="/api/sport")
+
 
 ##Obtener todos los deportistas
 @sport_bp.route("/getAllSport", methods=["GET"])
@@ -126,4 +126,78 @@ def get_sport_by_id(id):
             "detail": str(e)
         }), 500
 
-## Modificar datos de un deportista
+
+## Actualiza un deportista por su id(Solo lo podran modificarl los que tenga el rol de admin)
+@sport_bp.route("/updateSportById/<int:id>", methods=["PUT"])
+def update_sport_by_id(id):
+    try:
+        data = request.get_json()
+
+        if not data:
+            return jsonify({
+                "status": 400,
+                "error": "No se enviaron datos para actualizar"
+            }), 400
+
+        with engine.connect() as connectionBD:
+            # 1️⃣ Comprobar si existe
+            existing = connectionBD.execute(
+                text("SELECT id FROM deportistas WHERE id = :id"),
+                {"id": id}
+            ).fetchone()
+
+            if not existing:
+                return jsonify({
+                    "status": 404,
+                    "error": "Deportista no encontrado"
+                }), 404
+
+            # 2️⃣ Actualizar (PATCH-like con COALESCE)
+            connectionBD.execute(
+                text("""
+                    UPDATE deportistas
+                    SET
+                        usuario_id = COALESCE(:usuario_id, usuario_id),
+                        nombre = COALESCE(:nombre, nombre),
+                        edad = COALESCE(:edad, edad),
+                        disciplina_deportiva = COALESCE(:disciplina_deportiva, disciplina_deportiva),
+                        nacionalidad = COALESCE(:nacionalidad, nacionalidad),
+                        telefono = COALESCE(:telefono, telefono)
+                    WHERE id = :id
+                """),
+                {
+                    "id": id,
+                    "usuario_id": data.get("usuario_id"),
+                    "nombre": data.get("nombre"),
+                    "edad": data.get("edad"),
+                    "disciplina_deportiva": data.get("disciplina_deportiva"),
+                    "nacionalidad": data.get("nacionalidad"),
+                    "telefono": data.get("telefono")
+                }
+            )
+
+            connectionBD.commit()
+
+        return jsonify({
+            "status": 200,
+            "message": "Deportista actualizado correctamente"
+        }), 200
+
+    except OperationalError:
+        return jsonify({
+            "status": 503,
+            "error": "Base de datos no disponible"
+        }), 503
+
+    except SQLAlchemyError:
+        return jsonify({
+            "status": 500,
+            "error": "Error ejecutando la actualización"
+        }), 500
+
+    except Exception as e:
+        return jsonify({
+            "status": 500,
+            "error": "Error interno del servidor",
+            "detail": str(e)
+        }), 500

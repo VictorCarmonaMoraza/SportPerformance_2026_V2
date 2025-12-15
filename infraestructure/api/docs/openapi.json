@@ -314,7 +314,86 @@
       }
     }
   }
+},
+    "/api/sport/updateSportById/{id}": {
+  "put": {
+    "tags": ["Deportistas"],
+    "summary": "Actualiza un deportista por su id",
+    "description": "Actualiza parcialmente los datos de un deportista existente",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "type": "integer",
+        "example": 1
+      },
+      {
+        "in": "body",
+        "name": "body",
+        "required": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "usuario_id": {
+              "type": "integer",
+              "example": 6
+            },
+            "nombre": {
+              "type": "string",
+              "example": "Víctor Carmona"
+            },
+            "edad": {
+              "type": "integer",
+              "example": 30
+            },
+            "disciplina_deportiva": {
+              "type": "string",
+              "example": "Triatlón"
+            },
+            "nacionalidad": {
+              "type": "string",
+              "example": "España"
+            },
+            "telefono": {
+              "type": "string",
+              "example": "+34 600 000 000"
+            }
+          }
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Deportista actualizado correctamente",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "integer",
+              "example": 200
+            },
+            "message": {
+              "type": "string",
+              "example": "Deportista actualizado correctamente"
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "No se enviaron datos para actualizar"
+      },
+      "404": {
+        "description": "Deportista no encontrado"
+      },
+      "503": {
+        "description": "Base de datos no disponible"
+      },
+      "500": {
+        "description": "Error interno del servidor"
+      }
+    }
+  }
 }
-
   }
 }
