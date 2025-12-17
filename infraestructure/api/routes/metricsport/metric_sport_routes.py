@@ -1,3 +1,4 @@
+from calendar import monthrange
 from datetime import date
 
 from dateutil.relativedelta import relativedelta
@@ -542,3 +543,106 @@ def getLastWeek(deportista_id: int):
 
 
 # obtener metricas de un mes concreto(pasarle mes y deportista_id)
+@metrics_person_bp.route("/getMonthMetrics/<int:deportista_id>/<int:month>", methods=["GET"])
+def getMetricsMonth(deportista_id: int, month: int):
+
+    # Validar mes
+    if month < 1 or month > 12:
+        return jsonify({
+            "status": 400,
+            "message": "El mes debe estar entre 1 y 12"
+        }), 400
+
+    # Año actual
+    year = date.today().year
+
+    # Rango de fechas del mes
+    fecha_inicio = date(year, month, 1)
+    ultimo_dia = monthrange(year, month)[1]
+    fecha_fin = date(year, month, ultimo_dia)
+
+    try:
+        with engine.connect() as connectionBD:
+
+            # Comprobar que el deportista existe
+            existe_deportista = connectionBD.execute(
+                text("""
+                    SELECT 1
+                    FROM deportistas
+                    WHERE id = :deportista_id
+                """),
+                {"deportista_id": deportista_id}
+            ).scalar()
+
+            if not existe_deportista:
+                return jsonify({
+                    "status": 404,
+                    "message": "El deportista no existe en la base de datos"
+                }), 404
+
+            # Obtener métricas
+            metrics = connectionBD.execute(
+                text("""
+                    SELECT *
+                    FROM metricas_deportivas
+                    WHERE deportista_id = :deportista_id
+                      AND fecha >= :fecha_inicio
+                      AND fecha <= :fecha_fin
+                    ORDER BY fecha
+                """),
+                {
+                    "deportista_id": deportista_id,
+                    "fecha_inicio": fecha_inicio,
+                    "fecha_fin": fecha_fin
+                }
+            ).mappings().all()
+
+            if not metrics:
+                return jsonify({
+                    "status": 200,
+                    "message": "No existen métricas para ese mes",
+                    "numero_registros": 0,
+                    "metrics": []
+                }), 200
+
+            # Mapear resultados
+            return jsonify({
+                "status": 200,
+                "message": "Métricas obtenidas correctamente",
+                "numero_registros": len(metrics),
+                "metrics": [
+                    {
+                        "id": row["id"],
+                        "deportista_id": row["deportista_id"],
+                        "fecha": row["fecha"].strftime("%Y/%m/%d"),
+                        "peso": row["peso"],
+                        "altura": row["altura"],
+                        "frecuencia_cardiaca": row["frecuencia_cardiaca"],
+                        "velocidad_media": row["velocidad_media"],
+                        "distancia": row["distancia"],
+                        "calorias": row["calorias"]
+                    }
+                    for row in metrics
+                ]
+            }), 200
+
+    except OperationalError:
+        return jsonify({
+            "status": 503,
+            "error": "Base de datos no disponible"
+        }), 503
+
+
+    except SQLAlchemyError:
+        return jsonify({
+            "status": 500,
+            "error": "Error ejecutando la consulta"
+        }), 500
+
+    except Exception as e:
+        return jsonify({
+            "status": 500,
+            "error": "Error interno del servidor",
+            "detail": str(e)
+        }), 500
+
