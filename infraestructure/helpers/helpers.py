@@ -7,9 +7,7 @@ def getFechas(year: int):
     return fecha_inicio, fecha_fin
 
 
-def getLastYear(date_current: date):
+def getLastYear(date_current: date, n_dias: int):
     fecha_fin = date_current
-    fecha_inicio = date_current - timedelta(days=365)
+    fecha_inicio = date_current - timedelta(days=n_dias)
     return fecha_inicio, fecha_fin
-
-
