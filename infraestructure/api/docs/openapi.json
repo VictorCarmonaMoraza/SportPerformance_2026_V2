@@ -487,7 +487,7 @@
     }
   }
 },
-"/api/metrics/getByDateRange/{deportista_id}": {
+    "/api/metrics/getByDateRange/{deportista_id}": {
   "get": {
     "tags": ["Métricas deportivas"],
     "summary": "Obtiene métricas deportivas de un deportista entre dos fechas",
@@ -594,7 +594,199 @@
       }
     }
   }
+},
+    "/api/metrics/lastYear/{deportista_id}": {
+  "get": {
+    "tags": ["Métricas deportivas"],
+    "summary": "Obtiene las métricas deportivas del último año",
+    "description": "Devuelve las métricas deportivas de un deportista correspondientes al último año natural (desde la fecha actual hasta un año atrás)",
+    "parameters": [
+      {
+        "name": "deportista_id",
+        "in": "path",
+        "required": true,
+        "type": "integer",
+        "example": 1
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Métricas obtenidas correctamente",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "integer",
+              "example": 200
+            },
+            "message": {
+              "type": "string",
+              "example": "Métricas obtenidas correctamente"
+            },
+            "metrics": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 12
+                  },
+                  "deportista_id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "fecha": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2025-02-10"
+                  },
+                  "peso": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 72.4
+                  },
+                  "altura": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 1.78
+                  },
+                  "frecuencia_cardiaca": {
+                    "type": "integer",
+                    "example": 142
+                  },
+                  "velocidad_media": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 11.9
+                  },
+                  "distancia": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 6.2
+                  },
+                  "calorias": {
+                    "type": "integer",
+                    "example": 515
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "503": {
+        "description": "Base de datos no disponible"
+      },
+      "500": {
+        "description": "Error interno del servidor"
+      }
+    }
+  }
+},
+    "/api/metrics/getMetricsByYear/{deportista_id}/{year}": {
+  "get": {
+    "tags": ["Métricas deportivas"],
+    "summary": "Obtiene las métricas deportivas de un año específico",
+    "description": "Devuelve las métricas deportivas de un deportista correspondientes a un año natural concreto",
+    "parameters": [
+      {
+        "name": "deportista_id",
+        "in": "path",
+        "required": true,
+        "type": "integer",
+        "example": 1
+      },
+      {
+        "name": "year",
+        "in": "path",
+        "required": true,
+        "type": "integer",
+        "example": 2024
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Métricas obtenidas correctamente",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "integer",
+              "example": 200
+            },
+            "message": {
+              "type": "string",
+              "example": "Métricas obtenidas correctamente"
+            },
+            "metrics": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 12
+                  },
+                  "deportista_id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "fecha": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2024-02-10"
+                  },
+                  "peso": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 72.4
+                  },
+                  "altura": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 1.78
+                  },
+                  "frecuencia_cardiaca": {
+                    "type": "integer",
+                    "example": 142
+                  },
+                  "velocidad_media": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 11.9
+                  },
+                  "distancia": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 6.2
+                  },
+                  "calorias": {
+                    "type": "integer",
+                    "example": 515
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "El deportista no existe en la base de datos"
+      },
+      "503": {
+        "description": "Base de datos no disponible"
+      },
+      "500": {
+        "description": "Error interno del servidor"
+      }
+    }
+  }
 }
+
+
+
+
 
   }
 }
