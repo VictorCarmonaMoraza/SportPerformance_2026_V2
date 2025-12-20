@@ -201,3 +201,62 @@ def update_sport_by_id(id):
             "error": "Error interno del servidor",
             "detail": str(e)
         }), 500
+
+##Obtener informacion de un usuario por su id_usuario
+@sport_bp.route("/getInfoSport/<int:usuario_id>", methods=["GET"])
+def getsportInfo(usuario_id):
+    try:
+        with engine.connect() as connectionBD:
+            existing_deportista = connectionBD.execute(
+                text("SELECT * FROM deportistas WHERE usuario_id = :usuario_id"),
+                {"usuario_id": usuario_id}
+            ).mappings().first()
+
+            if not existing_deportista:
+                return jsonify({
+                    "status": 404,
+                    "error": "El deportista no existe en nuestra base de datos"
+                }), 404
+
+            deportista = Sportsperson(
+                id=existing_deportista["id"],
+                usuario_id=existing_deportista["usuario_id"],
+                nombre=existing_deportista["nombre"],
+                edad=existing_deportista["edad"],
+                disciplina_deportiva=existing_deportista["disciplina_deportiva"],
+                nacionalidad=existing_deportista["nacionalidad"],
+                telefono=existing_deportista["telefono"]
+            )
+
+        return jsonify({
+            "status": 200,
+            "message": "Deportista encontrado",
+            "deportista": {
+                "id": deportista.id,
+                "usuario_id": deportista.usuario_id,
+                "nombre": deportista.nombre,
+                "edad": deportista.edad,
+                "disciplina_deportiva": deportista.disciplina_deportiva,
+                "nacionalidad": deportista.nacionalidad,
+                "telefono": deportista.telefono
+            }
+        }), 200
+
+    except OperationalError:
+        return jsonify({
+            "status": 503,
+            "error": "Base de datos no disponible"
+        }), 503
+
+    except SQLAlchemyError:
+        return jsonify({
+            "status": 500,
+            "error": "Error ejecutando la consulta"
+        }), 500
+
+    except Exception as e:
+        return jsonify({
+            "status": 500,
+            "error": "Error interno del servidor",
+            "detail": str(e)
+        }), 500
