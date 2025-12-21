@@ -1,6 +1,7 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, Response
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError, OperationalError
+
 from infraestructure.config.config_bd import engine
 
 user_bp = Blueprint("user_bp", __name__, url_prefix="/api/user")
@@ -85,3 +86,56 @@ def update_user_by_id(id):
             "error": "Error interno del servidor",
             "detail": str(e)
         }), 500
+
+
+##Obtencion de la foto de un usuario
+@user_bp.route("/<int:id>/photo", methods=["GET"])
+def get_user_photo(id):
+    try:
+        with engine.connect() as connectionBD:
+            result = connectionBD.execute(
+                text("""
+                SELECT foto, foto_mime
+                FROM usuarios
+                WHERE id=:id
+                """),
+                {"id": id}
+            ).mappings().first()
+
+            if not result:
+                return jsonify({
+                    "status": 404,
+                    "error": "Usuario no encontrado"
+                }), 404
+
+            if not result["foto"]:
+                return jsonify({
+                    "status": 404,
+                    "error": "El usuario no tiene foto"
+                }), 404
+
+            return Response(
+                result["foto"],
+                mimetype=result["foto_mime"] or "image/jpeg"
+            )
+
+    except OperationalError:
+        return jsonify({
+            "status": 503,
+            "error": "Base de datos no disponible"
+        }), 503
+
+    except SQLAlchemyError as e:
+        return jsonify({
+            "status": 500,
+            "error": "Error accediendo a la base de datos",
+            "detail": str(e)
+        }), 500
+
+    except Exception as e:
+        return jsonify({
+            "status": 500,
+            "error": "Error interno del servidor",
+            "detail": str(e)
+        }), 500
+
