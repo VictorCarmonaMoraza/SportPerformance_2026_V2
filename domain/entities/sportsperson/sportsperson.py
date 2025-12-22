@@ -8,8 +8,6 @@ class Sportsperson:
             disciplina_deportiva: str | None = None,
             nacionalidad: str | None = None,
             telefono: str | None = None,
-            foto_url: str | None = None,
-            tiene_foto: bool = False
     ):
         self.id = id
         self.usuario_id = usuario_id
@@ -18,5 +16,3 @@ class Sportsperson:
         self.disciplina_deportiva = disciplina_deportiva
         self.nacionalidad = nacionalidad
         self.telefono = telefono
-        self.foto_url = foto_url
-        self.tiene_foto = tiene_foto

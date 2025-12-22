@@ -380,7 +380,6 @@
     }
   }
 },
-
     "/api/sport/getSportById/{id}": {
   "get": {
     "tags": ["Deportistas"],
@@ -537,7 +536,7 @@
     }
   }
 },
-    "/api/metrics/metricsPersonById/{id}": {
+    "/api/metrics/metricsPersonById/{deportista_id}": {
   "get": {
     "tags": ["Métricas deportivas"],
     "summary": "Obtiene las métricas deportivas de un deportista por su id",
@@ -548,7 +547,8 @@
         "in": "path",
         "required": true,
         "type": "integer",
-        "example": 1
+        "example": 1,
+        "description": "Identificador del deportista"
       }
     ],
     "responses": {
@@ -617,8 +617,22 @@
           }
         }
       },
-      "404": {
-        "description": "No existen métricas para el deportista indicado"
+      "200_empty": {
+        "description": "No existen métricas para este deportista",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "integer", "example": 200 },
+            "message": {
+              "type": "string",
+              "example": "No existen métricas para este deportista"
+            },
+            "metrics": {
+              "type": "array",
+              "example": []
+            }
+          }
+        }
       },
       "503": {
         "description": "Base de datos no disponible"
@@ -629,6 +643,7 @@
     }
   }
 },
+
     "/api/metrics/getByDateRange/{deportista_id}": {
   "get": {
     "tags": ["Métricas deportivas"],
