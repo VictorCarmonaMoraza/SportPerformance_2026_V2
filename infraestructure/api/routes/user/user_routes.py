@@ -95,9 +95,9 @@ def get_user_photo(id):
         with engine.connect() as connectionBD:
             result = connectionBD.execute(
                 text("""
-                SELECT foto, foto_mime
-                FROM usuarios
-                WHERE id=:id
+                    SELECT foto_url
+                    FROM usuarios
+                    WHERE id = :id
                 """),
                 {"id": id}
             ).mappings().first()
@@ -108,16 +108,16 @@ def get_user_photo(id):
                     "error": "Usuario no encontrado"
                 }), 404
 
-            if not result["foto"]:
+            if not result["foto_url"]:
                 return jsonify({
                     "status": 404,
                     "error": "El usuario no tiene foto"
                 }), 404
 
-            return Response(
-                result["foto"],
-                mimetype=result["foto_mime"] or "image/jpeg"
-            )
+            return jsonify({
+                "status": 200,
+                "foto_url": result["foto_url"]
+            }), 200
 
     except OperationalError:
         return jsonify({

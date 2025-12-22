@@ -31,7 +31,7 @@ def login():
                         email,
                         passwordhash,
                         rol,
-                        foto IS NOT NULL AS tiene_foto
+                        foto_url
                     FROM usuarios
                     WHERE nameuser = :nameuser
                 """),
@@ -52,6 +52,8 @@ def login():
 
             token = generar_token(user["id"], user["rol"])
 
+            tiene_foto = user["foto_url"] is not None
+
             return jsonify({
                 "status": 200,
                 "message": "Login correcto",
@@ -61,8 +63,8 @@ def login():
                     "nameuser": user["nameuser"],
                     "email": user["email"],
                     "rol": user["rol"],
-                    "tiene_foto": user["tiene_foto"],
-                    "foto_url": f"/api/user/{user['id']}/photo" if user["tiene_foto"] else None
+                    "tiene_foto": tiene_foto,
+                    "foto_url": user["foto_url"]
                 }
             }), 200
 
@@ -73,6 +75,7 @@ def login():
             "error": "Error interno del servidor",
             "detail": str(e)
         }), 500
+
 
 
 @auth_bp.route("/register", methods=["POST"])

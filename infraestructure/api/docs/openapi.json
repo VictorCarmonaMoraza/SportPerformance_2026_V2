@@ -17,84 +17,100 @@
   ],
   "paths": {
     "/api/auth/login": {
-      "post": {
-        "tags": [
-          "Autenticación"
-        ],
-        "summary": "Inicia sesión en el sistema",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "Credenciales",
-            "required": true,
-            "schema": {
+  "post": {
+    "tags": ["Autenticación"],
+    "summary": "Inicia sesión en el sistema",
+    "description": "Autentica al usuario y devuelve un token JWT junto con la información básica del usuario.",
+    "consumes": ["application/json"],
+    "produces": ["application/json"],
+    "parameters": [
+      {
+        "in": "body",
+        "name": "Credenciales",
+        "required": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "nameuser": {
+              "type": "string",
+              "example": "vcarm"
+            },
+            "password": {
+              "type": "string",
+              "example": "123456"
+            }
+          },
+          "required": ["nameuser", "password"]
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Login exitoso",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "integer",
+              "example": 200
+            },
+            "message": {
+              "type": "string",
+              "example": "Login correcto"
+            },
+            "token": {
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            },
+            "usuario": {
               "type": "object",
               "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 6
+                },
                 "nameuser": {
                   "type": "string",
-                  "example": "lgomez"
+                  "example": "vcarm"
                 },
-                "password": {
+                "email": {
                   "type": "string",
-                  "example": "123456"
-                }
-              },
-              "required": [
-                "nameuser",
-                "password"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Login exitoso",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "integer",
-                  "example": 200
+                  "example": "victor@email.com"
                 },
-                "message": {
+                "rol": {
                   "type": "string",
-                  "example": "Login correcto"
+                  "example": "admin"
                 },
-                "token": {
-                  "type": "string"
+                "tiene_foto": {
+                  "type": "boolean",
+                  "example": true
                 },
-                "usuario": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "integer"
-                    },
-                    "nameuser": {
-                      "type": "string"
-                    },
-                    "email": {
-                      "type": "string"
-                    },
-                    "rol": {
-                      "type": "string"
-                    }
-                  }
+                "foto_url": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "assets/images/victor1.png"
                 }
               }
             }
-          },
-          "401": {
-            "description": "Contraseña incorrecta"
-          },
-          "404": {
-            "description": "Usuario no encontrado"
-          },
-          "500": {
-            "description": "Error interno del servidor"
           }
         }
+      },
+      "400": {
+        "description": "Faltan credenciales"
+      },
+      "401": {
+        "description": "Contraseña incorrecta"
+      },
+      "404": {
+        "description": "Usuario no encontrado"
+      },
+      "500": {
+        "description": "Error interno del servidor"
       }
-    },
+    }
+  }
+},
+
     "/api/auth/register": {
       "post": {
         "tags": [
@@ -241,18 +257,17 @@
     },
     "/api/sport/getInfoSport/{usuario_id}": {
   "get": {
-    "tags": [
-      "Deportistas"
-    ],
-    "summary": "Obtiene la información deportiva de un usuario",
-    "description": "Devuelve el deportista asociado a un usuario concreto. Si no existe un deportista para ese usuario, se devuelve un error 404.",
+    "tags": ["Deportistas"],
+    "summary": "Obtiene la información del deportista por usuario",
+    "description": "Devuelve la información del deportista asociada a un usuario. Si el usuario tiene foto de perfil, se indica mediante el campo tiene_foto y se proporciona la URL para obtenerla.",
     "parameters": [
       {
         "name": "usuario_id",
         "in": "path",
         "required": true,
         "type": "integer",
-        "description": "ID del usuario"
+        "example": 1,
+        "description": "Identificador del usuario asociado al deportista"
       }
     ],
     "responses": {
@@ -274,11 +289,11 @@
               "properties": {
                 "id": {
                   "type": "integer",
-                  "example": 6
+                  "example": 3
                 },
                 "usuario_id": {
                   "type": "integer",
-                  "example": 10
+                  "example": 1
                 },
                 "nombre": {
                   "type": "string",
@@ -286,11 +301,11 @@
                 },
                 "edad": {
                   "type": "integer",
-                  "example": 29
+                  "example": 32
                 },
                 "disciplina_deportiva": {
                   "type": "string",
-                  "example": "Atletismo"
+                  "example": "Running"
                 },
                 "nacionalidad": {
                   "type": "string",
@@ -298,7 +313,16 @@
                 },
                 "telefono": {
                   "type": "string",
-                  "example": "+34 678 912 345"
+                  "example": "600123456"
+                },
+                "tiene_foto": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "foto_url": {
+                  "type": "string",
+                  "example": "/api/user/1/photo",
+                  "nullable": true
                 }
               }
             }
@@ -306,7 +330,7 @@
         }
       },
       "404": {
-        "description": "El deportista no existe en nuestra base de datos",
+        "description": "El deportista no existe en la base de datos",
         "schema": {
           "type": "object",
           "properties": {
@@ -356,6 +380,7 @@
     }
   }
 },
+
     "/api/sport/getSportById/{id}": {
   "get": {
     "tags": ["Deportistas"],
@@ -1270,12 +1295,9 @@
     "/api/user/{id}/photo": {
   "get": {
     "tags": ["Usuarios"],
-    "summary": "Obtiene la foto de perfil de un usuario",
-    "description": "Devuelve la imagen de perfil del usuario en formato binario. Si el usuario no existe o no tiene foto, se devuelve un error 404.",
-    "produces": [
-      "image/jpeg",
-      "image/png"
-    ],
+    "summary": "Obtiene la URL de la foto de perfil del usuario",
+    "description": "Devuelve la ruta de la imagen de perfil almacenada en el frontend (assets). No devuelve la imagen, solo la URL.",
+    "produces": ["application/json"],
     "parameters": [
       {
         "name": "id",
@@ -1288,10 +1310,19 @@
     ],
     "responses": {
       "200": {
-        "description": "Imagen obtenida correctamente",
+        "description": "URL de la foto obtenida correctamente",
         "schema": {
-          "type": "string",
-          "format": "binary"
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "integer",
+              "example": 200
+            },
+            "foto_url": {
+              "type": "string",
+              "example": "assets/images/victor1.png"
+            }
+          }
         }
       },
       "404": {
@@ -1345,6 +1376,7 @@
     }
   }
 }
+
 
 
 
