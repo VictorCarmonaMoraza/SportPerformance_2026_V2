@@ -58,7 +58,7 @@ def login():
                 "status": 200,
                 "message": "Login correcto",
                 "token": token,
-                "usuario": {
+                "user": {
                     "id": user["id"],
                     "nameuser": user["nameuser"],
                     "email": user["email"],

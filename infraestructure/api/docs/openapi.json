@@ -62,7 +62,7 @@
               "type": "string",
               "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
             },
-            "usuario": {
+            "user": {
               "type": "object",
               "properties": {
                 "id": {
@@ -583,33 +583,77 @@
                     "format": "date",
                     "example": "2025-01-15"
                   },
+
                   "peso": {
                     "type": "number",
                     "format": "float",
-                    "example": 72.5
+                    "example": 72.5,
+                    "nullable": true
                   },
                   "altura": {
                     "type": "number",
                     "format": "float",
-                    "example": 1.78
+                    "example": 1.78,
+                    "nullable": true
                   },
+
                   "frecuencia_cardiaca": {
                     "type": "integer",
-                    "example": 145
+                    "example": 145,
+                    "nullable": true
                   },
+                  "fc_media": {
+                    "type": "integer",
+                    "example": 138,
+                    "nullable": true
+                  },
+                  "fc_max": {
+                    "type": "integer",
+                    "example": 172,
+                    "nullable": true
+                  },
+
                   "velocidad_media": {
                     "type": "number",
                     "format": "float",
-                    "example": 12.3
+                    "example": 12.3,
+                    "nullable": true
                   },
                   "distancia": {
                     "type": "number",
                     "format": "float",
-                    "example": 5.6
+                    "example": 5.6,
+                    "nullable": true
                   },
+                  "duracion_min": {
+                    "type": "integer",
+                    "example": 45,
+                    "nullable": true
+                  },
+                  "ritmo_medio": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 5.12,
+                    "nullable": true
+                  },
+                  "rpe": {
+                    "type": "integer",
+                    "example": 7,
+                    "nullable": true
+                  },
+
                   "calorias": {
                     "type": "integer",
-                    "example": 520
+                    "example": 520,
+                    "nullable": true
+                  },
+
+                  "created_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2025-01-15T08:32:10",
+                    "nullable": true,
+                    "description": "Fecha de creación del registro"
                   }
                 }
               }
@@ -617,12 +661,16 @@
           }
         }
       },
+
       "200_empty": {
         "description": "No existen métricas para este deportista",
         "schema": {
           "type": "object",
           "properties": {
-            "status": { "type": "integer", "example": 200 },
+            "status": {
+              "type": "integer",
+              "example": 200
+            },
             "message": {
               "type": "string",
               "example": "No existen métricas para este deportista"
@@ -634,6 +682,7 @@
           }
         }
       },
+
       "503": {
         "description": "Base de datos no disponible"
       },
@@ -643,6 +692,7 @@
     }
   }
 },
+
 
     "/api/metrics/getByDateRange/{deportista_id}": {
   "get": {
@@ -1390,10 +1440,75 @@
       }
     }
   }
+},
+    "/api/upload-file/uploadfile": {
+  "post": {
+    "tags": ["Importación"],
+    "summary": "Sube y procesa un fichero CSV o Excel",
+    "description": "Permite subir un fichero CSV, XLS o XLSX para su lectura y validación. El fichero se envía como multipart/form-data y el sistema devuelve un preview de los datos.",
+    "consumes": [
+      "multipart/form-data"
+    ],
+    "parameters": [
+      {
+        "name": "file",
+        "in": "formData",
+        "required": true,
+        "type": "file",
+        "description": "Fichero a importar (csv, xls, xlsx)"
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Fichero procesado correctamente",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "integer",
+              "example": 200
+            },
+            "message": {
+              "type": "string",
+              "example": "Archivo leído correctamente"
+            },
+            "filename": {
+              "type": "string",
+              "example": "usuarios.csv"
+            },
+            "total_rows": {
+              "type": "integer",
+              "example": 150
+            },
+            "columns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": ["id", "nameuser", "email"]
+            },
+            "rows": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "description": "Primeras filas del fichero como preview"
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "No se ha enviado ningún archivo o el formato no es válido"
+      },
+      "415": {
+        "description": "Formato de contenido no soportado (debe ser multipart/form-data)"
+      },
+      "500": {
+        "description": "Error al procesar el fichero"
+      }
+    }
+  }
 }
-
-
-
 
 
   }

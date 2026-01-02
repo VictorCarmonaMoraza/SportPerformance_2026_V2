@@ -40,7 +40,13 @@ def get_metrics_person(deportista_id):
                     frecuencia_cardiaca=row["frecuencia_cardiaca"],
                     velocidad_media=row["velocidad_media"],
                     distancia=row["distancia"],
-                    calorias=row["calorias"]
+                    calorias=row["calorias"],
+                    created_at=row["created_ad"],
+                    duracion_min=row["duracion_min"],
+                    fc_media=row["fc_media"],
+                    fc_max=row["fc_max"],
+                    ritmo_medio=["ritmo_medio"],
+                    rpe=["rpe"]
                 )
                 for row in existing_metrics
             ]
@@ -58,7 +64,13 @@ def get_metrics_person(deportista_id):
                         "frecuencia_cardiaca": m.frecuencia_cardiaca,
                         "velocidad_media": m.velocidad_media,
                         "distancia": m.distancia,
-                        "calorias": m.calorias
+                        "calorias": m.calorias,
+                        "created_at": m.created_at,
+                        "duracion_min": m.duracion_min,
+                        "fc_media": m.fc_media,
+                        "fc_max": m.fc_max,
+                        "ritmo_medio": m.ritmo_medio,
+                        "rpe": m.rpe
                     }
                     for m in metrics
                 ]
@@ -369,9 +381,9 @@ def getMetricsByYear(deportista_id, year):
 ##Obtener metricas del ultimo año(fecha actual-menos 365 dias)
 @metrics_person_bp.route("/getlastYearMetrics/<int:deportista_id>", methods=["GET"])
 def getlastYearMetrics(deportista_id: int):
-    n_dias =365
+    n_dias = 365
     fecha_actual = date.today()
-    fecha_inicio, fecha_fin = getLastYear(fecha_actual,n_dias)
+    fecha_inicio, fecha_fin = getLastYear(fecha_actual, n_dias)
 
     # Abrimos conexion
     try:
@@ -458,8 +470,8 @@ def getlastYearMetrics(deportista_id: int):
 @metrics_person_bp.route("/getlastWeek/<int:deportista_id>", methods=["GET"])
 def getLastWeek(deportista_id: int):
     n_dias = 7
-    fecha_actual =date.today()
-    fecha_inicio, fecha_fin = getLastYear(fecha_actual,n_dias)
+    fecha_actual = date.today()
+    fecha_inicio, fecha_fin = getLastYear(fecha_actual, n_dias)
 
     ##Abrimos conexion
     try:
@@ -545,7 +557,6 @@ def getLastWeek(deportista_id: int):
 # obtener metricas de un mes concreto(pasarle mes y deportista_id)
 @metrics_person_bp.route("/getMonthMetrics/<int:deportista_id>/<int:month>", methods=["GET"])
 def getMetricsMonth(deportista_id: int, month: int):
-
     # Validar mes
     if month < 1 or month > 12:
         return jsonify({
@@ -645,4 +656,3 @@ def getMetricsMonth(deportista_id: int, month: int):
             "error": "Error interno del servidor",
             "detail": str(e)
         }), 500
-

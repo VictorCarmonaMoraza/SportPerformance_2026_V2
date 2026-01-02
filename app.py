@@ -9,6 +9,7 @@ from flask_cors import CORS
 from infraestructure.api.routes.auth.auth_routes import auth_bp
 from infraestructure.api.routes.metricsport.metric_sport_routes import metrics_person_bp
 from infraestructure.api.routes.sport.sport_routes import sport_bp
+from infraestructure.api.routes.uploadfiles.uploadfile_routes import upload_bp
 from infraestructure.api.routes.user.user_routes import user_bp
 
 from infraestructure.config.settings import settings
@@ -47,6 +48,7 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(sport_bp)
 app.register_blueprint(metrics_person_bp)
 app.register_blueprint(user_bp)
+app.register_blueprint(upload_bp)
 print("📌 RUTAS REGISTRADAS:")
 print(f'La ruta es -----------> {app.url_map}')
 
