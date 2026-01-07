@@ -41,12 +41,12 @@ def get_metrics_person(deportista_id):
                     velocidad_media=row["velocidad_media"],
                     distancia=row["distancia"],
                     calorias=row["calorias"],
-                    created_at=row["created_ad"],
+                    created_at=row["created_at"],
                     duracion_min=row["duracion_min"],
                     fc_media=row["fc_media"],
                     fc_max=row["fc_max"],
-                    ritmo_medio=["ritmo_medio"],
-                    rpe=["rpe"]
+                    ritmo_medio=row["ritmo_medio"],
+                    rpe=row["rpe"]
                 )
                 for row in existing_metrics
             ]
@@ -142,7 +142,13 @@ def get_metrics_by_date_range(deportista_id: int):
                     frecuencia_cardiaca=row["frecuencia_cardiaca"],
                     velocidad_media=row["velocidad_media"],
                     distancia=row["distancia"],
-                    calorias=row["calorias"]
+                    calorias=row["calorias"],
+                    created_at=row["created_at"],
+                    duracion_min=row["duracion_min"],
+                    fc_media=row["fc_media"],
+                    fc_max=row["fc_max"],
+                    ritmo_medio=row["ritmo_medio"],
+                    rpe=row["rpe"]
                 )
                 for row in existing_metrics
             ]
@@ -160,7 +166,13 @@ def get_metrics_by_date_range(deportista_id: int):
                         "frecuencia_cardiaca": m.frecuencia_cardiaca,
                         "velocidad_media": m.velocidad_media,
                         "distancia": m.distancia,
-                        "calorias": m.calorias
+                        "calorias": m.calorias,
+                        "created_at": m.created_at,
+                        "duracion_min": m.duracion_min,
+                        "fc_media": m.fc_media,
+                        "fc_max": m.fc_max,
+                        "ritmo_medio": m.ritmo_medio,
+                        "rpe": m.rpe
                     }
                     for m in metrics
                 ]
@@ -232,7 +244,13 @@ def get_metrics_last_year(deportista_id: int):
                     frecuencia_cardiaca=row["frecuencia_cardiaca"],
                     velocidad_media=row["velocidad_media"],
                     distancia=row["distancia"],
-                    calorias=row["calorias"]
+                    calorias=row["calorias"],
+                    created_at=row["created_at"],
+                    duracion_min=row["duracion_min"],
+                    fc_media=row["fc_media"],
+                    fc_max=row["fc_max"],
+                    ritmo_medio=row["ritmo_medio"],
+                    rpe=row["rpe"]
                 )
                 for row in metrics
             ]
@@ -250,7 +268,13 @@ def get_metrics_last_year(deportista_id: int):
                         "frecuencia_cardiaca": m.frecuencia_cardiaca,
                         "velocidad_media": m.velocidad_media,
                         "distancia": m.distancia,
-                        "calorias": m.calorias
+                        "calorias": m.calorias,
+                        "created_at": m.created_at,
+                        "duracion_min": m.duracion_min,
+                        "fc_media": m.fc_media,
+                        "fc_max": m.fc_max,
+                        "ritmo_medio": m.ritmo_medio,
+                        "rpe": m.rpe
                     }
                     for m in metrics
                 ]
@@ -262,11 +286,14 @@ def get_metrics_last_year(deportista_id: int):
             "error": "Base de datos no disponible"
         }), 503
 
-
-    except SQLAlchemyError:
+    except SQLAlchemyError as e:
+        print("SQLAlchemyError:", e)
+        print("Args:", e.args)
+        print("Orig:", getattr(e, "orig", None))
         return jsonify({
             "status": 500,
-            "error": "Error ejecutando la consulta"
+            "error": "Error ejecutando la consulta",
+            "detail": str(e)
         }), 500
 
     except Exception as e:
@@ -333,7 +360,13 @@ def getMetricsByYear(deportista_id, year):
                     frecuencia_cardiaca=row["frecuencia_cardiaca"],
                     velocidad_media=row["velocidad_media"],
                     distancia=row["distancia"],
-                    calorias=row["calorias"]
+                    calorias=row["calorias"],
+                    created_at=row["created_at"],
+                    duracion_min=row["duracion_min"],
+                    fc_media=row["fc_media"],
+                    fc_max=row["fc_max"],
+                    ritmo_medio=row["ritmo_medio"],
+                    rpe=row["rpe"]
                 )
                 for row in metrics
             ]
@@ -351,7 +384,13 @@ def getMetricsByYear(deportista_id, year):
                         "frecuencia_cardiaca": m.frecuencia_cardiaca,
                         "velocidad_media": m.velocidad_media,
                         "distancia": m.distancia,
-                        "calorias": m.calorias
+                        "calorias": m.calorias,
+                        "created_at": m.created_at,
+                        "duracion_min": m.duracion_min,
+                        "fc_media": m.fc_media,
+                        "fc_max": m.fc_max,
+                        "ritmo_medio": m.ritmo_medio,
+                        "rpe": m.rpe
                     }
                     for m in metrics
                 ]
@@ -420,7 +459,13 @@ def getlastYearMetrics(deportista_id: int):
                     frecuencia_cardiaca=row["frecuencia_cardiaca"],
                     velocidad_media=row["velocidad_media"],
                     distancia=row["distancia"],
-                    calorias=row["calorias"]
+                    calorias=row["calorias"],
+                    created_at=row["created_at"],
+                    duracion_min=row["duracion_min"],
+                    fc_media=row["fc_media"],
+                    fc_max=row["fc_max"],
+                    ritmo_medio=row["ritmo_medio"],
+                    rpe=row["rpe"]
                 )
                 for row in metrics
             ]
@@ -439,7 +484,13 @@ def getlastYearMetrics(deportista_id: int):
                         "frecuencia_cardiaca": m.frecuencia_cardiaca,
                         "velocidad_media": m.velocidad_media,
                         "distancia": m.distancia,
-                        "calorias": m.calorias
+                        "calorias": m.calorias,
+                        "created_at": m.created_at,
+                        "duracion_min": m.duracion_min,
+                        "fc_media": m.fc_media,
+                        "fc_max": m.fc_max,
+                        "ritmo_medio": m.ritmo_medio,
+                        "rpe": m.rpe
                     }
                     for m in metrics
                 ]
@@ -494,9 +545,11 @@ def getLastWeek(deportista_id: int):
 
             if not metrics:
                 return jsonify({
-                    "status": 404,
-                    "message": "No existen metricas durante la ultima semana"
-                }), 404
+                    "status": 200,
+                    "message": "No existen métricas durante la última semana",
+                    "numero_registros": 0,
+                    "metrics": []
+                }), 200
 
             metrics = [
                 Metricsperson(
@@ -508,7 +561,13 @@ def getLastWeek(deportista_id: int):
                     frecuencia_cardiaca=row["frecuencia_cardiaca"],
                     velocidad_media=row["velocidad_media"],
                     distancia=row["distancia"],
-                    calorias=row["calorias"]
+                    calorias=row["calorias"],
+                    created_at=row["created_at"],
+                    duracion_min=row["duracion_min"],
+                    fc_media=row["fc_media"],
+                    fc_max=row["fc_max"],
+                    ritmo_medio=row["ritmo_medio"],
+                    rpe=row["rpe"]
                 )
                 for row in metrics
             ]
@@ -527,7 +586,13 @@ def getLastWeek(deportista_id: int):
                         "frecuencia_cardiaca": m.frecuencia_cardiaca,
                         "velocidad_media": m.velocidad_media,
                         "distancia": m.distancia,
-                        "calorias": m.calorias
+                        "calorias": m.calorias,
+                        "created_at": m.created_at,
+                        "duracion_min": m.duracion_min,
+                        "fc_media": m.fc_media,
+                        "fc_max": m.fc_max,
+                        "ritmo_medio": m.ritmo_medio,
+                        "rpe": m.rpe
                     }
                     for m in metrics
                 ]
@@ -631,7 +696,13 @@ def getMetricsMonth(deportista_id: int, month: int):
                         "frecuencia_cardiaca": row["frecuencia_cardiaca"],
                         "velocidad_media": row["velocidad_media"],
                         "distancia": row["distancia"],
-                        "calorias": row["calorias"]
+                        "calorias": row["calorias"],
+                        "created_at": row["created_at"],
+                        "duracion_min": row["duracion_min"],
+                        "fc_media": row["fc_media"],
+                        "fc_max": row["fc_max"],
+                        "ritmo_medio": row["ritmo_medio"],
+                        "rpe": row["rpe"]
                     }
                     for row in metrics
                 ]
