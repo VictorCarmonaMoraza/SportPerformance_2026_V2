@@ -727,3 +727,106 @@ def getMetricsMonth(deportista_id: int, month: int):
             "error": "Error interno del servidor",
             "detail": str(e)
         }), 500
+
+
+# Obtener la última métrica completa de un deportista
+@metrics_person_bp.route(
+    "/getLastMetric/<int:deportista_id>",
+    methods=["GET"]
+)
+def getLastMetric(deportista_id: int):
+
+    try:
+        with engine.connect() as connectionBD:
+
+            # ===============================
+            # 1️⃣ Comprobar que el deportista existe
+            # ===============================
+            existe_deportista = connectionBD.execute(
+                text("""
+                    SELECT 1
+                    FROM deportistas
+                    WHERE id = :deportista_id
+                """),
+                {"deportista_id": deportista_id}
+            ).scalar()
+
+            if not existe_deportista:
+                return jsonify({
+                    "status": 404,
+                    "message": "El deportista no existe"
+                }), 404
+
+            # ===============================
+            # 2️⃣ Obtener último registro
+            # ===============================
+            row = connectionBD.execute(
+                text("""
+                    SELECT *
+                    FROM metricas_deportivas
+                    WHERE deportista_id = :deportista_id
+                    ORDER BY fecha DESC
+                    LIMIT 1
+                """),
+                {"deportista_id": deportista_id}
+            ).mappings().first()
+
+            # ===============================
+            # 3️⃣ Sin métricas
+            # ===============================
+            if not row:
+                return jsonify({
+                    "status": 200,
+                    "message": "El deportista no tiene métricas",
+                    "numero_registros": 0,
+                    "metrics": []
+                }), 200
+
+            # ===============================
+            # 4️⃣ Respuesta NORMALIZADA
+            # ===============================
+            return jsonify({
+                "status": 200,
+                "message": "Última métrica obtenida correctamente",
+                "numero_registros": 1,
+                "metrics": [
+                    {
+                        "id": row["id"],
+                        "deportista_id": row["deportista_id"],
+                        "fecha": row["fecha"].strftime("%Y/%m/%d"),
+                        "peso": row["peso"],
+                        "altura": row["altura"],
+                        "frecuencia_cardiaca": row["frecuencia_cardiaca"],
+                        "velocidad_media": row["velocidad_media"],
+                        "distancia": row["distancia"],
+                        "calorias": row["calorias"],
+                        "created_at": row["created_at"],
+                        "duracion_min": row["duracion_min"],
+                        "fc_media": row["fc_media"],
+                        "fc_max": row["fc_max"],
+                        "ritmo_medio": row["ritmo_medio"],
+                        "rpe": row["rpe"]
+                    }
+                ]
+            }), 200
+
+    except OperationalError:
+        return jsonify({
+            "status": 503,
+            "error": "Base de datos no disponible"
+        }), 503
+
+    except SQLAlchemyError:
+        return jsonify({
+            "status": 500,
+            "error": "Error ejecutando la consulta"
+        }), 500
+
+    except Exception as e:
+        return jsonify({
+            "status": 500,
+            "error": "Error interno del servidor",
+            "detail": str(e)
+        }), 500
+
+
