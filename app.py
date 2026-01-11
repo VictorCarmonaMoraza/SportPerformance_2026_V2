@@ -7,6 +7,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 from flask_cors import CORS
 
 from infraestructure.api.routes.auth.auth_routes import auth_bp
+from infraestructure.api.routes.machine_learning.machine_learning_routes import machine_learning_bp
 from infraestructure.api.routes.metricsport.metric_sport_routes import metrics_person_bp
 from infraestructure.api.routes.sport.sport_routes import sport_bp
 from infraestructure.api.routes.uploadfiles.uploadfile_routes import upload_bp
@@ -49,6 +50,7 @@ app.register_blueprint(sport_bp)
 app.register_blueprint(metrics_person_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(upload_bp)
+app.register_blueprint(machine_learning_bp)
 print("📌 RUTAS REGISTRADAS:")
 print(f'La ruta es -----------> {app.url_map}')
 

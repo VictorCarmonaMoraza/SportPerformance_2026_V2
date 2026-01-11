@@ -1356,7 +1356,7 @@
         }
       }
     },
-"/api/metrics/getLastMetric/{deportista_id}": {
+    "/api/metrics/getLastMetric/{deportista_id}": {
   "get": {
     "tags": [
       "Métricas deportivas"
@@ -1480,8 +1480,6 @@
     }
   }
 },
-
-
     "/api/user/updateUser/{id}": {
       "put": {
         "tags": [
@@ -1721,6 +1719,99 @@
           }
         }
       }
+    },
+    "/api/machine_learning/machine_learning_calories/{deportista_id}": {
+  "get": {
+    "tags": [
+      "Machine Learning"
+    ],
+    "summary": "Predicción de calorías futuras de un deportista",
+    "description": "Obtiene las métricas históricas de calorías de un deportista y genera una predicción de calorías futuras mediante un modelo de Machine Learning. Si no existen suficientes datos históricos, se devuelve una lista vacía.",
+    "parameters": [
+      {
+        "name": "deportista_id",
+        "in": "path",
+        "required": true,
+        "type": "integer",
+        "example": 1,
+        "description": "Identificador único del deportista"
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Predicción generada correctamente o datos insuficientes",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "integer",
+              "example": 200
+            },
+            "message": {
+              "type": "string",
+              "example": "Predicción generada correctamente"
+            },
+            "predictions": {
+              "type": "array",
+              "description": "Listado de predicciones de calorías futuras (puede estar vacío)",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "fecha": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2025-01-15"
+                  },
+                  "calorias_predichas": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 520.35
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "503": {
+        "description": "Base de datos no disponible",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "integer",
+              "example": 503
+            },
+            "error": {
+              "type": "string",
+              "example": "Base de datos no disponible"
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Error interno del servidor",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "integer",
+              "example": 500
+            },
+            "error": {
+              "type": "string",
+              "example": "Error interno del servidor"
+            },
+            "detail": {
+              "type": "string",
+              "example": "Detalle del error"
+            }
+          }
+        }
+      }
     }
+  }
+}
+
   }
 }

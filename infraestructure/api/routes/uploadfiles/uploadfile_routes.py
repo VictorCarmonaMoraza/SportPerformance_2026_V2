@@ -32,7 +32,18 @@ def upload_file():
         # 1️⃣ LEER FICHERO
         # ===============================
         if file.filename.endswith('.csv'):
-            df = pd.read_csv(file, sep=';', encoding='utf-8')
+            try:
+                df = pd.read_csv(
+                    file,
+                    sep=None,  # autodetección
+                    engine="python",
+                    encoding="utf-8"
+                )
+            except Exception:
+                return jsonify({
+                    "status": 400,
+                    "error": "No se pudo leer el CSV. Separador no válido"
+                }), 400
         elif file.filename.endswith(('.xls', '.xlsx')):
             df = pd.read_excel(file)
         else:
