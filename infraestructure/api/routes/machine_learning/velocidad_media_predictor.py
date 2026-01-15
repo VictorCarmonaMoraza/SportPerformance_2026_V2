@@ -77,7 +77,7 @@ def predict_future_velocidad_media(metrics, days_to_predict=7):
     return [
         {
             "fecha": future_dates[i].strftime("%Y-%m-%d"),
-            "velocidad_media_predichas": round(float(predictions[i]), 2)
+            "predicciones": round(float(predictions[i]), 2)
         }
         for i in range(days_to_predict)
     ]
