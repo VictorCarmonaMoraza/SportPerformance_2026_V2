@@ -1357,129 +1357,129 @@
       }
     },
     "/api/metrics/getLastMetric/{deportista_id}": {
-  "get": {
-    "tags": [
-      "Métricas deportivas"
-    ],
-    "summary": "Obtiene la última métrica deportiva de un deportista",
-    "description": "Devuelve el último registro completo de métricas deportivas disponible para un deportista. La respuesta sigue el mismo formato que los endpoints de listado.",
-    "parameters": [
-      {
-        "name": "deportista_id",
-        "in": "path",
-        "required": true,
-        "type": "integer",
-        "example": 1,
-        "description": "Identificador del deportista"
-      }
-    ],
-    "responses": {
-      "200": {
-        "description": "Última métrica obtenida correctamente",
-        "schema": {
-          "type": "object",
-          "properties": {
-            "status": {
-              "type": "integer",
-              "example": 200
-            },
-            "message": {
-              "type": "string",
-              "example": "Última métrica obtenida correctamente"
-            },
-            "numero_registros": {
-              "type": "integer",
-              "example": 1
-            },
-            "metrics": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "integer",
-                    "example": 37
-                  },
-                  "deportista_id": {
-                    "type": "integer",
-                    "example": 1
-                  },
-                  "fecha": {
-                    "type": "string",
-                    "example": "2025/12/19"
-                  },
-                  "peso": {
-                    "type": "number",
-                    "format": "float",
-                    "example": 72.6
-                  },
-                  "altura": {
-                    "type": "number",
-                    "format": "float",
-                    "example": 1.78
-                  },
-                  "frecuencia_cardiaca": {
-                    "type": "integer",
-                    "example": 148
-                  },
-                  "velocidad_media": {
-                    "type": "number",
-                    "format": "float",
-                    "example": 15.9
-                  },
-                  "distancia": {
-                    "type": "number",
-                    "format": "float",
-                    "example": 12.4
-                  },
-                  "calorias": {
-                    "type": "integer",
-                    "example": 1040
-                  },
-                  "created_at": {
-                    "type": "string",
-                    "format": "date-time",
-                    "example": "2025-12-19T10:32:00"
-                  },
-                  "duracion_min": {
-                    "type": "integer",
-                    "example": 58
-                  },
-                  "fc_media": {
-                    "type": "integer",
-                    "example": 140
-                  },
-                  "fc_max": {
-                    "type": "integer",
-                    "example": 178
-                  },
-                  "ritmo_medio": {
-                    "type": "number",
-                    "format": "float",
-                    "example": 4.35
-                  },
-                  "rpe": {
-                    "type": "integer",
-                    "example": 7
+      "get": {
+        "tags": [
+          "Métricas deportivas"
+        ],
+        "summary": "Obtiene la última métrica deportiva de un deportista",
+        "description": "Devuelve el último registro completo de métricas deportivas disponible para un deportista. La respuesta sigue el mismo formato que los endpoints de listado.",
+        "parameters": [
+          {
+            "name": "deportista_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "example": 1,
+            "description": "Identificador del deportista"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Última métrica obtenida correctamente",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Última métrica obtenida correctamente"
+                },
+                "numero_registros": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "metrics": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 37
+                      },
+                      "deportista_id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "fecha": {
+                        "type": "string",
+                        "example": "2025/12/19"
+                      },
+                      "peso": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 72.6
+                      },
+                      "altura": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 1.78
+                      },
+                      "frecuencia_cardiaca": {
+                        "type": "integer",
+                        "example": 148
+                      },
+                      "velocidad_media": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 15.9
+                      },
+                      "distancia": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 12.4
+                      },
+                      "calorias": {
+                        "type": "integer",
+                        "example": 1040
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-12-19T10:32:00"
+                      },
+                      "duracion_min": {
+                        "type": "integer",
+                        "example": 58
+                      },
+                      "fc_media": {
+                        "type": "integer",
+                        "example": 140
+                      },
+                      "fc_max": {
+                        "type": "integer",
+                        "example": 178
+                      },
+                      "ritmo_medio": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 4.35
+                      },
+                      "rpe": {
+                        "type": "integer",
+                        "example": 7
+                      }
+                    }
                   }
                 }
               }
             }
+          },
+          "404": {
+            "description": "El deportista no existe"
+          },
+          "503": {
+            "description": "Base de datos no disponible"
+          },
+          "500": {
+            "description": "Error interno del servidor"
           }
         }
-      },
-      "404": {
-        "description": "El deportista no existe"
-      },
-      "503": {
-        "description": "Base de datos no disponible"
-      },
-      "500": {
-        "description": "Error interno del servidor"
       }
-    }
-  }
-},
+    },
     "/api/user/updateUser/{id}": {
       "put": {
         "tags": [
@@ -1721,97 +1721,188 @@
       }
     },
     "/api/machine_learning/machine_learning_calories/{deportista_id}": {
-  "get": {
-    "tags": [
-      "Machine Learning"
-    ],
-    "summary": "Predicción de calorías futuras de un deportista",
-    "description": "Obtiene las métricas históricas de calorías de un deportista y genera una predicción de calorías futuras mediante un modelo de Machine Learning. Si no existen suficientes datos históricos, se devuelve una lista vacía.",
-    "parameters": [
-      {
-        "name": "deportista_id",
-        "in": "path",
-        "required": true,
-        "type": "integer",
-        "example": 1,
-        "description": "Identificador único del deportista"
-      }
-    ],
-    "responses": {
-      "200": {
-        "description": "Predicción generada correctamente o datos insuficientes",
-        "schema": {
-          "type": "object",
-          "properties": {
-            "status": {
-              "type": "integer",
-              "example": 200
-            },
-            "message": {
-              "type": "string",
-              "example": "Predicción generada correctamente"
-            },
-            "predictions": {
-              "type": "array",
-              "description": "Listado de predicciones de calorías futuras (puede estar vacío)",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "fecha": {
-                    "type": "string",
-                    "format": "date",
-                    "example": "2025-01-15"
-                  },
-                  "calorias_predichas": {
-                    "type": "number",
-                    "format": "float",
-                    "example": 520.35
+      "get": {
+        "tags": [
+          "Machine Learning"
+        ],
+        "summary": "Predicción de calorías futuras de un deportista",
+        "description": "Obtiene las métricas históricas de calorías de un deportista y genera una predicción de calorías futuras mediante un modelo de Machine Learning. Si no existen suficientes datos históricos, se devuelve una lista vacía.",
+        "parameters": [
+          {
+            "name": "deportista_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "example": 1,
+            "description": "Identificador único del deportista"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Predicción generada correctamente o datos insuficientes",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Predicción generada correctamente"
+                },
+                "predictions": {
+                  "type": "array",
+                  "description": "Listado de predicciones de calorías futuras (puede estar vacío)",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "fecha": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-01-15"
+                      },
+                      "calorias_predichas": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 520.35
+                      }
+                    }
                   }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Base de datos no disponible",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 503
+                },
+                "error": {
+                  "type": "string",
+                  "example": "Base de datos no disponible"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 500
+                },
+                "error": {
+                  "type": "string",
+                  "example": "Error interno del servidor"
+                },
+                "detail": {
+                  "type": "string",
+                  "example": "Detalle del error"
                 }
               }
             }
           }
         }
-      },
-      "503": {
-        "description": "Base de datos no disponible",
-        "schema": {
-          "type": "object",
-          "properties": {
-            "status": {
-              "type": "integer",
-              "example": 503
-            },
-            "error": {
-              "type": "string",
-              "example": "Base de datos no disponible"
-            }
+      }
+    },
+    "/api/machine_learning/machine_learning_velocidad_media/{deportista_id}": {
+      "get": {
+        "tags": [
+          "Machine Learning"
+        ],
+        "summary": "Predicción de velocidad media futuras de un deportista",
+        "description": "Obtiene las métricas históricas de velocidad media de un deportista y genera una predicción de velocidad media futuras mediante un modelo de Machine Learning. Si no existen suficientes datos históricos, se devuelve una lista vacía.",
+        "parameters": [
+          {
+            "name": "deportista_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "example": 1,
+            "description": "Identificador único del deportista"
           }
-        }
-      },
-      "500": {
-        "description": "Error interno del servidor",
-        "schema": {
-          "type": "object",
-          "properties": {
-            "status": {
-              "type": "integer",
-              "example": 500
-            },
-            "error": {
-              "type": "string",
-              "example": "Error interno del servidor"
-            },
-            "detail": {
-              "type": "string",
-              "example": "Detalle del error"
+        ],
+        "responses": {
+          "200": {
+            "description": "Predicción generada correctamente o datos insuficientes",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Predicción generada correctamente"
+                },
+                "predictions": {
+                  "type": "array",
+                  "description": "Listado de predicciones de velocidad media futuras (puede estar vacío)",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "fecha": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-01-15"
+                      },
+                      "velocidad_media_predichas": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 520.35
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Base de datos no disponible",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 503
+                },
+                "error": {
+                  "type": "string",
+                  "example": "Base de datos no disponible"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 500
+                },
+                "error": {
+                  "type": "string",
+                  "example": "Error interno del servidor"
+                },
+                "detail": {
+                  "type": "string",
+                  "example": "Detalle del error"
+                }
+              }
             }
           }
         }
       }
     }
-  }
-}
-
   }
 }
