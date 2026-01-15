@@ -4,9 +4,10 @@ from sklearn.linear_model import LinearRegression
 from datetime import timedelta
 
 
-def predict_future_calories(metrics, days_to_predict=7):
+def predict_future_metric(metrics, value_key, days_to_predict=7):
     """
-    metrics: lista de dicts -> [{fecha, calorias}]
+    metrics: lista de dicts -> [{fecha, calorias, velocidad_media, ...}]
+    value_key: str -> nombre del campo a predecir
     days_to_predict: número de días a predecir
     """
 
@@ -15,7 +16,7 @@ def predict_future_calories(metrics, days_to_predict=7):
     # -------------------------
     df = pd.DataFrame(metrics)
 
-    if df.empty:
+    if df.empty or value_key not in df.columns:
         return []
 
     df["fecha"] = pd.to_datetime(df["fecha"])
@@ -37,8 +38,8 @@ def predict_future_calories(metrics, days_to_predict=7):
     # -------------------------
     # 3. Limpiar nulos
     # -------------------------
-    df["calorias"] = df["calorias"].interpolate(method="linear")
-    df = df.dropna()
+    df[value_key] = df[value_key].interpolate(method="linear")
+    df = df.dropna(subset=[value_key])
 
     if df.empty:
         return []
@@ -49,7 +50,7 @@ def predict_future_calories(metrics, days_to_predict=7):
     df["t"] = np.arange(len(df))
 
     X = df[["t"]]
-    y = df["calorias"]
+    y = df[value_key]
 
     # -------------------------
     # 5. Entrenar modelo
