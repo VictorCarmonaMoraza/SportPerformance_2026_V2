@@ -13,6 +13,106 @@ from infraestructure.helpers.helpers import getFechas, getLastYear
 metrics_person_bp = Blueprint("metrics_person_bp", __name__, url_prefix="/api/metrics")
 
 
+'''Crear un deportista'''
+@metrics_person_bp.route("/create_sport", methods=["POST"])
+def create_deportista():
+
+    print("🔥 ENTRANDO EN CREATE_SPORT", request.method)
+
+    # 1️⃣ Leer JSON o query params
+    data = request.get_json(silent=True)
+
+    if not data:
+        data = request.args.to_dict()
+        print("⚠️ Usando request.args:", data)
+
+    if not data:
+        return jsonify({"error": "No se han enviado datos"}), 400
+
+    # 2️⃣ Obtener campos (CORREGIDO)
+    usuario_id = int(data.get("usuario_id")) if data.get("usuario_id") else None
+    nombre = data.get("nombre")
+    edad = int(data.get("edad")) if data.get("edad") else None
+    disciplina = data.get("disciplina_deportiva")
+    nacionalidad = data.get("nacionalidad")
+    telefono = data.get("telefono")
+
+    # 3️⃣ Validaciones
+    if not usuario_id or not nombre or edad is None or not disciplina:
+        return jsonify({
+            "error": "Faltan campos obligatorios",
+            "required": ["usuario_id", "nombre", "edad", "disciplina_deportiva"]
+        }), 400
+
+    try:
+        with engine.connect() as connectionBD:
+
+            # 4️⃣ Verificar usuario
+            user_exists = connectionBD.execute(
+                text("SELECT id FROM usuarios WHERE id = :usuario_id"),
+                {"usuario_id": usuario_id}
+            ).fetchone()
+
+            if not user_exists:
+                return jsonify({"error": "El usuario no existe"}), 404
+
+            # 5️⃣ Insertar deportista
+            result = connectionBD.execute(
+                text("""
+                    INSERT INTO deportistas (
+                        usuario_id,
+                        nombre,
+                        edad,
+                        disciplina_deportiva,
+                        nacionalidad,
+                        telefono
+                    )
+                    VALUES (
+                        :usuario_id,
+                        :nombre,
+                        :edad,
+                        :disciplina,
+                        :nacionalidad,
+                        :telefono
+                    )
+                    RETURNING id
+                """),
+                {
+                    "usuario_id": usuario_id,
+                    "nombre": nombre,
+                    "edad": edad,
+                    "disciplina": disciplina,
+                    "nacionalidad": nacionalidad,
+                    "telefono": telefono,
+                }
+            )
+
+            deportista_id = result.fetchone()[0]
+            connectionBD.commit()
+
+            return jsonify({
+                "status": 201,
+                "message": "Deportista creado correctamente",
+                "data": {
+                    "id": deportista_id,
+                    "usuario_id": usuario_id,
+                    "nombre": nombre,
+                    "edad": edad,
+                    "disciplina_deportiva": disciplina,
+                    "nacionalidad": nacionalidad,
+                    "telefono": telefono,
+                }
+            }), 201
+
+    except Exception as e:
+        print("❌ ERROR al crear deportista:", e)
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+
+
 ##Obtener metricas de un deportista por su id
 @metrics_person_bp.route("/metricsPersonById/<int:deportista_id>", methods=["GET"])
 def get_metrics_person(deportista_id):

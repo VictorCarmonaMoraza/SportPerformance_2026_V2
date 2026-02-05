@@ -135,3 +135,5 @@ def register_user():
     except Exception as e:
         print("❌ ERROR al registrar usuario:", e)
         return jsonify({"error": str(e)}), 500
+
+'''Crear un deportista'''

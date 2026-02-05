@@ -550,6 +550,151 @@
         }
       }
     },
+    "/api/metrics/create_sport": {
+  "post": {
+    "tags": ["Deportistas"],
+    "summary": "Crear un deportista",
+    "description": "Crea un deportista en la base de datos y lo vincula a un usuario existente. Los datos pueden enviarse mediante cuerpo JSON o como parámetros de consulta para facilitar pruebas desde Swagger.",
+    "parameters": [
+      {
+        "name": "usuario_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "example": 1
+        },
+        "description": "Identificador del usuario al que se vincula el deportista (opcional si se envía en el body)"
+      },
+      {
+        "name": "nombre",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "example": "Victor"
+        },
+        "description": "Nombre del deportista"
+      },
+      {
+        "name": "edad",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "example": 30
+        },
+        "description": "Edad del deportista"
+      },
+      {
+        "name": "disciplina_deportiva",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "example": "Running"
+        },
+        "description": "Disciplina deportiva principal"
+      },
+      {
+        "name": "nacionalidad",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "example": "España"
+        },
+        "description": "Nacionalidad del deportista"
+      },
+      {
+        "name": "telefono",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "example": "600123456"
+        },
+        "description": "Teléfono de contacto"
+      }
+    ],
+    "requestBody": {
+      "required": false,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": [
+              "usuario_id",
+              "nombre",
+              "edad",
+              "disciplina_deportiva"
+            ],
+            "properties": {
+              "usuario_id": {
+                "type": "integer",
+                "example": 1
+              },
+              "nombre": {
+                "type": "string",
+                "example": "Victor"
+              },
+              "edad": {
+                "type": "integer",
+                "example": 30
+              },
+              "disciplina_deportiva": {
+                "type": "string",
+                "example": "Running"
+              },
+              "nacionalidad": {
+                "type": "string",
+                "example": "España",
+                "nullable": true
+              },
+              "telefono": {
+                "type": "string",
+                "example": "600123456",
+                "nullable": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": {
+        "description": "Deportista creado correctamente",
+        "content": {
+          "application/json": {
+            "example": {
+              "status": 201,
+              "message": "Deportista creado correctamente",
+              "data": {
+                "id": 5,
+                "usuario_id": 1,
+                "nombre": "Victor",
+                "edad": 30,
+                "disciplina_deportiva": "Running",
+                "nacionalidad": "España",
+                "telefono": "600123456"
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Faltan campos obligatorios o no se han enviado datos"
+      },
+      "404": {
+        "description": "El usuario no existe"
+      },
+      "500": {
+        "description": "Error interno del servidor"
+      }
+    }
+  }
+},
+
     "/api/metrics/metricsPersonById/{deportista_id}": {
       "get": {
         "tags": [
