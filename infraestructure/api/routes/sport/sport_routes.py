@@ -33,7 +33,7 @@ def get_all_sport():
             return jsonify({
                 "status": 200,
                 "message": "Deportistas obtenidos correctamente",
-                "deportistas": [
+                "data": [
                     {
                         "id": d.id,
                         "usuario_id": d.usuario_id,
@@ -96,7 +96,7 @@ def get_sport_by_id(id):
         return jsonify({
             "status": 200,
             "message": "Deportista encontrado",
-            "deportista": {
+            "data": {
                 "id": deportista.id,
                 "usuario_id": deportista.usuario_id,
                 "nombre": deportista.nombre,
@@ -231,7 +231,7 @@ def getsportInfo(usuario_id):
         return jsonify({
             "status": 200,
             "message": "Deportista encontrado",
-            "deportista": {
+            "data": {
                 "id": deportista.id,
                 "usuario_id": deportista.usuario_id,
                 "nombre": deportista.nombre,

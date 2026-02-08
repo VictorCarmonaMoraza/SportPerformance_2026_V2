@@ -80,60 +80,72 @@ def login():
 
 @auth_bp.route("/register", methods=["POST"])
 def register_user():
-    """
-    Crea un nuevo usuario en la base de datos
-    Requiere:nameuser,email,password
-    """
     data = request.get_json()
 
     nameuser = data.get("nameuser")
     email = data.get("email")
     password = data.get("password")
 
-    # Validaciones si faltan campos
     if not nameuser or not email or not password:
-        return jsonify({"Error": "Faltan campos obligatorios"}), 400
+        return jsonify({"error": "Faltan campos obligatorios"}), 400
 
     try:
-        # Generar hash seguro de la contraseña
         password_hash = generate_password_hash(password)
 
-        ##Abrimos conexion
-        with engine.connect() as connectionBD:
-            # Verificamos si existe el usuario o email
+        with engine.begin() as connectionBD:
+
+            # 1️⃣ Comprobar si existe usuario
             existing_user = connectionBD.execute(
-                text("SELECT id FROM usuarios WHERE nameuser=:nameuser OR email=:email"),
+                text("""
+                    SELECT id 
+                    FROM usuarios 
+                    WHERE nameuser = :nameuser OR email = :email
+                """),
                 {"nameuser": nameuser, "email": email}
             ).fetchone()
 
             if existing_user:
                 return jsonify({"error": "El usuario o email ya existe"}), 409
 
-            ##Insertar nuevo usuario
-            connectionBD.execute(
-                text(
-                    """ INSERT INTO usuarios (nameuser,email,passwordhash)
-                    VALUES(:nameuser,:email,:passwordhash)"""
-                ),
+            # 2️⃣ Insertar usuario y recuperar ID
+            result = connectionBD.execute(
+                text("""
+                    INSERT INTO usuarios (nameuser, email, passwordhash)
+                    VALUES (:nameuser, :email, :passwordhash)
+                    RETURNING id
+                """),
                 {
                     "nameuser": nameuser,
                     "email": email,
-                    "passwordhash": password_hash,
+                    "passwordhash": password_hash
                 }
             )
-            connectionBD.commit()
 
-            return jsonify({
-                "status": 201,
-                "message": "Usuario creado correctamente",
-                "data": {
-                    "nameuser": nameuser,
-                    "email": email,
-                }
-            }), 201
+            usuario_id = result.scalar()
+
+            # 3️⃣ Insertar SOLO el usuario_id en deportista
+            connectionBD.execute(
+                text("""
+                    INSERT INTO deportistas (usuario_id)
+                    VALUES (:usuario_id)
+                """),
+                {"usuario_id": usuario_id}
+            )
+
+        return jsonify({
+            "status": 201,
+            "message": "Usuario creado y vinculado a deportista",
+            "data": {
+                "usuario_id": usuario_id,
+                "nameuser": nameuser,
+                "email": email
+            }
+        }), 201
 
     except Exception as e:
         print("❌ ERROR al registrar usuario:", e)
         return jsonify({"error": str(e)}), 500
 
-'''Crear un deportista'''
+
+
+

@@ -215,7 +215,7 @@
                   "type": "string",
                   "example": "Deportistas obtenidos correctamente"
                 },
-                "deportistas": {
+                "data": {
                   "type": "array",
                   "items": {
                     "type": "object",
@@ -420,7 +420,7 @@
                   "type": "string",
                   "example": "Deportista encontrado"
                 },
-                "deportista": {
+                "data": {
                   "type": "object",
                   "properties": {
                     "id": {
@@ -550,11 +550,11 @@
         }
       }
     },
-    "/api/metrics/create_sport": {
-  "post": {
+    "/api/metrics/updatesport": {
+  "put": {
     "tags": ["Deportistas"],
-    "summary": "Crear un deportista",
-    "description": "Crea un deportista en la base de datos y lo vincula a un usuario existente. Los datos pueden enviarse mediante cuerpo JSON o como parámetros de consulta para facilitar pruebas desde Swagger.",
+    "summary": "Crear o actualizar un deportista",
+    "description": "Crea un deportista si no existe uno asociado al usuario o actualiza el existente. El deportista se identifica de forma única por el usuario_id. Los datos pueden enviarse en el cuerpo JSON o como parámetros de consulta (útil para pruebas desde Swagger).",
     "parameters": [
       {
         "name": "usuario_id",
@@ -564,7 +564,7 @@
           "type": "integer",
           "example": 1
         },
-        "description": "Identificador del usuario al que se vincula el deportista (opcional si se envía en el body)"
+        "description": "Identificador del usuario al que se vincula el deportista (obligatorio si no se envía en el body)"
       },
       {
         "name": "nombre",
@@ -602,9 +602,10 @@
         "required": false,
         "schema": {
           "type": "string",
-          "example": "España"
+          "example": "España",
+          "nullable": true
         },
-        "description": "Nacionalidad del deportista"
+        "description": "Nacionalidad del deportista (opcional)"
       },
       {
         "name": "telefono",
@@ -612,9 +613,10 @@
         "required": false,
         "schema": {
           "type": "string",
-          "example": "600123456"
+          "example": "600123456",
+          "nullable": true
         },
-        "description": "Teléfono de contacto"
+        "description": "Teléfono de contacto (opcional)"
       }
     ],
     "requestBody": {
@@ -662,15 +664,35 @@
       }
     },
     "responses": {
+      "200": {
+        "description": "Deportista actualizado correctamente",
+        "content": {
+          "application/json": {
+            "example": {
+              "status": 200,
+              "message": "Deportista guardado correctamente",
+              "data": {
+                "id": 5,
+                "usuario_id": 1,
+                "nombre": "Victor",
+                "edad": 31,
+                "disciplina_deportiva": "Running",
+                "nacionalidad": "España",
+                "telefono": "600123456"
+              }
+            }
+          }
+        }
+      },
       "201": {
         "description": "Deportista creado correctamente",
         "content": {
           "application/json": {
             "example": {
               "status": 201,
-              "message": "Deportista creado correctamente",
+              "message": "Deportista guardado correctamente",
               "data": {
-                "id": 5,
+                "id": 6,
                 "usuario_id": 1,
                 "nombre": "Victor",
                 "edad": 30,
@@ -694,6 +716,7 @@
     }
   }
 },
+
 
     "/api/metrics/metricsPersonById/{deportista_id}": {
       "get": {
